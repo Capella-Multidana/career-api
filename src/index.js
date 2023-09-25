@@ -1,23 +1,26 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { PrismaClient } = require("@prisma/client")
 
-const prisma = new PrismaClient();
 const app = express();
 
 dotenv.config();
 
+
 const PORT = process.env.PORT;
+
+app.use(express.json());
 
 app.get("/api", (req,res) => {
     res.send("Capella Staging API")
 })
 
-app.get("/products", async (req, res) => {
-    const products = await prisma.product.findMany();
+const jobController = require("./job/job.controller");
+const userController = require("./user/user.controller");
+const applicationController = require("./application/application.controller");
 
-    res.send(products)
-})
+app.use("/jobs", jobController);
+app.use("/users", userController);
+app.use("/application", applicationController);
 
 app.listen(PORT, () => {
     console.log("Express API running in PORT: " + PORT);
